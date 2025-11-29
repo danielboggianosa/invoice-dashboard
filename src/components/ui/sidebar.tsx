@@ -1,4 +1,5 @@
 import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
 import { cn } from "@/lib/utils"
 
 interface SidebarContextValue {
@@ -142,18 +143,22 @@ const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     isActive?: boolean
+    asChild?: boolean
   }
->(({ className, isActive, ...props }, ref) => (
-  <button
-    ref={ref}
-    className={cn(
-      "flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
-      isActive && "bg-accent text-accent-foreground",
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, isActive, asChild = false, ...props }, ref) => {
+  const Comp = asChild ? Slot : "button"
+  return (
+    <Comp
+      ref={ref}
+      className={cn(
+        "flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+        isActive && "bg-accent text-accent-foreground",
+        className
+      )}
+      {...props}
+    />
+  )
+})
 SidebarMenuButton.displayName = "SidebarMenuButton"
 
 const SidebarTrigger = React.forwardRef<
